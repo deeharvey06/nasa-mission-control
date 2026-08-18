@@ -7,7 +7,7 @@ import {
   createTheme,
 } from 'arwes';
 
-import AppLayout from './pages/AppLayout';
+import AppLayout from './views/AppLayout';
 
 import { theme, resources, sounds } from './settings';
 

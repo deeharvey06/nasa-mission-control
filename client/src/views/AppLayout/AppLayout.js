@@ -1,54 +1,28 @@
-import { useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { Frame, withSounds, withStyles } from 'arwes';
 
-import usePlanets from '../hooks/usePlanets';
-import useLaunches from '../hooks/useLaunches';
+import Centered from '../../components/Centered';
+import Header from '../../layout/Header';
+import Footer from '../../layout/Footer';
 
-import Centered from '../components/Centered';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Launch from '../Launch';
+import History from '../History';
+import Upcoming from '../Upcoming';
 
-import Launch from './Launch';
-import History from './History';
-import Upcoming from './Upcoming';
+import useAppLayout from './hooks/useAppLayout';
 
-const styles = () => ({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100vh',
-    margin: 'auto',
-  },
-  centered: {
-    flex: 1,
-    paddingTop: '20px',
-    paddingBottom: '10px',
-  },
-});
+import { styles } from './styles.js';
 
-const AppLayout = (props) => {
-  const { sounds, classes } = props;
-
-  const [frameVisible, setFrameVisible] = useState(true);
-  const animateFrame = () => {
-    setFrameVisible(false);
-    setTimeout(() => {
-      setFrameVisible(true);
-    }, 600);
-  };
-
-  const onSuccessSound = () => sounds.success && sounds.success.play();
-  const onAbortSound = () => sounds.abort && sounds.abort.play();
-  const onFailureSound = () => sounds.warning && sounds.warning.play();
-
-  const { launches, isPendingLaunch, submitLaunch, abortLaunch } = useLaunches(
-    onSuccessSound,
-    onAbortSound,
-    onFailureSound,
-  );
-
-  const planets = usePlanets();
+const AppLayout = ({ sounds, classes }) => {
+  const {
+    frameVisible,
+    animateFrame,
+    launches,
+    isPendingLaunch,
+    submitLaunch,
+    abortLaunch,
+    planets,
+  } = useAppLayout(sounds);
 
   return (
     <div className={classes.content}>
