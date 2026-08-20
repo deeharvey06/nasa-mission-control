@@ -1,11 +1,21 @@
 async function httpGetPlanets() {
-  // TODO: Once API is ready.
-  // Load planets and return as JSON.
+  try {
+    const response = await fetch('http://localhost:8000/planets');
+    return response.json();
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
 }
 
 async function httpGetLaunches() {
-  // TODO: Once API is ready.
-  // Load launches, sort by flight number, and return as JSON.
+  try {
+    const response = await fetch('http://localhost:8000/launches');
+    return response.json();
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
 }
 
 async function httpSubmitLaunch(launch) {

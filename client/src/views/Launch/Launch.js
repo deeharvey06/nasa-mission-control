@@ -15,6 +15,8 @@ const Launch = ({ planets, entered, submitLaunch, isPendingLaunch }) => {
     "Effective stellar flux > 0.36 times Earth's value and < 1.11 times Earth's value",
   ];
 
+  console.log('Launch.js: planets', planets);
+
   return (
     <Appear id='launch' animate show={entered}>
       <LaunchParagraphs launchParagraphs={launchParagraphs} />
