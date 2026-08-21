@@ -8,8 +8,6 @@ import LaunchSelect from './components/LaunchSelect';
 const LaunchForm = ({ planets, entered, submitLaunch, isPendingLaunch }) => {
   const today = new Date().toISOString().split('T')[0];
 
-  console.log('planets in LaunchForm', planets);
-
   return (
     <form
       onSubmit={submitLaunch}
