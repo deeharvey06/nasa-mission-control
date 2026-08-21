@@ -2,7 +2,8 @@ import { Button, Loading } from 'arwes';
 
 import Clickable from '../../../../components/Clickable';
 import Input from '../../../../components/Input';
-import Select from '../../../../components/Select';
+
+import LaunchSelect from './components/LaunchSelect';
 
 const LaunchForm = ({ planets, entered, submitLaunch, isPendingLaunch }) => {
   const today = new Date().toISOString().split('T')[0];
@@ -35,7 +36,7 @@ const LaunchForm = ({ planets, entered, submitLaunch, isPendingLaunch }) => {
         placeholder='Explorer IS1'
       />
 
-      <Select
+      <LaunchSelect
         id='planets-selector'
         name='planets-selector'
         label='Destination Exoplanet'
