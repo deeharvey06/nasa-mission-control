@@ -9,13 +9,13 @@ async function httpGetPlanets() {
 }
 
 async function httpGetLaunches() {
-  try {
-    const response = await fetch('http://localhost:8000/launches');
-    return response.json();
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
+  // try {
+  //   const response = await fetch('http://localhost:8000/launches');
+  //   return response.json();
+  // } catch (err) {
+  //   console.error(err);
+  //   return [];
+  // }
 }
 
 async function httpSubmitLaunch(launch) {

@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "cors": "^2.8.6",
+    "csv-parse": "^7.0.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.6.2",
     "express-validator": "^7.3.2",
