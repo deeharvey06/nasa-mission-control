@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import Clickable from '../../../../../../components/Clickable';
 
-const UpcomingTableBody = ({ entered, launches, classes, abortLaunch }) => {
+const UpcomingTableBody = ({ launches, classes, abortLaunch }) => {
   const tableBody = useMemo(() => {
     return launches
       ?.filter((launch) => launch.upcoming)
