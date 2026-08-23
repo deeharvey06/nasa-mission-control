@@ -29,6 +29,7 @@ function addNewLaunches(req, res) {
     rocket,
     launchDate: launchDateObj,
     target,
+    ok: true,
   };
 
   const newLaunchRes = addNewLaunchesDB(newLaunch);
