@@ -1,6 +1,8 @@
 const {
+  findLaunchById,
   getAllLaunchesDB,
   addNewLaunchesDB,
+  abortLaunchById,
 } = require('../../models/launches/LaunchesModel');
 
 function getAllLaunches(req, res) {
@@ -37,7 +39,20 @@ function addNewLaunches(req, res) {
   return res.status(201).json(newLaunchRes);
 }
 
+function abortLaunch(req, res) {
+  const { id } = req.params;
+
+  if (!findLaunchById(Number(id))) {
+    return res.status(404).json({
+      error: 'Launch not found',
+    });
+  }
+
+  return res.status(200).json(abortLaunchById(Number(id)));
+}
+
 module.exports = {
   getAllLaunches,
   addNewLaunches,
+  abortLaunch,
 };
