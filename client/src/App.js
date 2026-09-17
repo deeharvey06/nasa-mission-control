@@ -1,34 +1,14 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import {
-  Arwes,
-  SoundsProvider,
-  ThemeProvider,
-  createSounds,
-  createTheme,
-} from 'arwes';
-
+import { SoundsProvider, createSounds } from 'arwes';
 import AppLayout from './views/AppLayout';
+import { sounds } from './settings';
+import './styles/mission-control.css';
 
-import { theme, resources, sounds } from './settings';
-
-const App = () => {
-  return (
-    <ThemeProvider theme={createTheme(theme)}>
-      <SoundsProvider sounds={createSounds(sounds)}>
-        <Arwes
-          animate
-          background={resources.background.large}
-          pattern={resources.pattern}
-        >
-          {(anim) => (
-            <Router>
-              <AppLayout show={anim.entered} />
-            </Router>
-          )}
-        </Arwes>
-      </SoundsProvider>
-    </ThemeProvider>
-  );
-};
-
+const App = () => (
+  <SoundsProvider sounds={createSounds(sounds)}>
+    <Router>
+      <AppLayout />
+    </Router>
+  </SoundsProvider>
+);
 export default App;
