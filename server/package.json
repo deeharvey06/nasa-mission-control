@@ -1,7 +1,7 @@
 {
-  "name": "nasa-mission-control-server",
+  "name": "asterion-mission-control-server",
   "version": "1.0.0",
-  "description": "NASA Mission Control API",
+  "description": "ASTERION Mission Control API",
   "main": "src/server.js",
   "directories": {
     "test": "tests"
