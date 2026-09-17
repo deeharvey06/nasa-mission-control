@@ -1,76 +1,26 @@
 import { Switch, Route } from 'react-router-dom';
-import { Frame, withSounds, withStyles } from 'arwes';
-
-import Centered from '../../components/Centered';
+import { withSounds } from 'arwes';
 import Header from '../../layout/Header';
 import Footer from '../../layout/Footer';
-
 import Launch from '../Launch';
 import History from '../History';
 import Upcoming from '../Upcoming';
-
 import useAppLayout from './hooks/useAppLayout';
 
-import { styles } from './styles.js';
-
-const AppLayout = ({ sounds, classes }) => {
-  const {
-    frameVisible,
-    animateFrame,
-    launches,
-    isPendingLaunch,
-    submitLaunch,
-    abortLaunch,
-    planets,
-  } = useAppLayout(sounds);
-
+const AppLayout = ({ sounds }) => {
+  const { launches, isPendingLaunch, submitLaunch, abortLaunch, planets } = useAppLayout(sounds);
   return (
-    <div className={classes.content}>
-      <Header onNav={animateFrame} />
-      <Centered className={classes.centered}>
-        <Frame
-          animate
-          show={frameVisible}
-          corners={4}
-          style={{ visibility: frameVisible ? 'visible' : 'hidden' }}
-        >
-          {(anim) => (
-            <div style={{ padding: '20px' }}>
-              <Switch>
-                <Route exact path='/'>
-                  <Launch
-                    entered={anim.entered}
-                    planets={planets}
-                    submitLaunch={submitLaunch}
-                    isPendingLaunch={isPendingLaunch}
-                  />
-                </Route>
-                <Route exact path='/launch'>
-                  <Launch
-                    entered={anim.entered}
-                    planets={planets}
-                    submitLaunch={submitLaunch}
-                    isPendingLaunch={isPendingLaunch}
-                  />
-                </Route>
-                <Route exact path='/upcoming'>
-                  <Upcoming
-                    entered={anim.entered}
-                    launches={launches}
-                    abortLaunch={abortLaunch}
-                  />
-                </Route>
-                <Route exact path='/history'>
-                  <History entered={anim.entered} launches={launches} />
-                </Route>
-              </Switch>
-            </div>
-          )}
-        </Frame>
-      </Centered>
+    <div className="app-shell">
+      <Header />
+      <main className="workspace">
+        <Switch>
+          <Route exact path={['/', '/launch']}><Launch planets={planets} submitLaunch={submitLaunch} isPendingLaunch={isPendingLaunch} /></Route>
+          <Route exact path="/upcoming"><Upcoming launches={launches} abortLaunch={abortLaunch} /></Route>
+          <Route exact path="/history"><History launches={launches} /></Route>
+        </Switch>
+      </main>
       <Footer />
     </div>
   );
 };
-
-export default withSounds()(withStyles(styles)(AppLayout));
+export default withSounds()(AppLayout);

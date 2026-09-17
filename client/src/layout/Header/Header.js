@@ -1,51 +1,18 @@
-import { Logo, Words, Header as ArwesHeader, withStyles } from 'arwes';
-
-import Centered from '../../components/Centered';
-import Nav from './components/Nav';
-
-import { styles } from './styles';
-
-const navItems = [
-  {
-    label: 'Launch',
-    link: '/launch',
-    icon: 'check_circle_outline',
-  },
-  {
-    label: 'Upcoming',
-    link: '/upcoming',
-    icon: 'update',
-  },
-  {
-    label: 'History',
-    link: '/history',
-    icon: 'history',
-  },
-];
-
-const Header = ({ classes, onNav, ...rest }) => (
-  <ArwesHeader animate>
-    <Centered className={classes.root} {...rest}>
-      <img
-        src='/favicon.png'
-        alt=''
-        className={classes.img}
-        style={{
-          margin: '15px 10px 15px 0',
-          height: '50px',
-          width: 'auto',
-        }}
-      />
-
-      <Logo animate size={50} className={classes.logo} layer='header' />
-
-      <Words animate className={classes.banner}>
-        NASA Mission Control
-      </Words>
-
-      <Nav navItems={navItems} classes={classes} onNav={onNav} />
-    </Centered>
-  </ArwesHeader>
+import { NavLink } from 'react-router-dom';
+const Header = () => (
+  <header className="topbar">
+    <div className="topbar-inner">
+      <NavLink to="/launch" className="brand" aria-label="Asterion Control home">
+        <span className="brand-mark" aria-hidden="true"><span></span></span>
+        <span><strong>ASTERION</strong><small>MISSION CONTROL</small></span>
+      </NavLink>
+      <nav className="primary-nav" aria-label="Primary navigation">
+        <NavLink to="/launch" activeClassName="active"><span className="nav-icon">＋</span>Mission Planning</NavLink>
+        <NavLink to="/upcoming" activeClassName="active"><span className="nav-icon">◌</span>Mission Queue</NavLink>
+        <NavLink to="/history" activeClassName="active"><span className="nav-icon">↺</span>Archive</NavLink>
+      </nav>
+      <div className="system-state"><span className="status-dot"></span><span><b>ALL SYSTEMS</b><small>NOMINAL</small></span></div>
+    </div>
+  </header>
 );
-
-export default withStyles(styles)(Header);
+export default Header;
