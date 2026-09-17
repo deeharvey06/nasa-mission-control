@@ -6,7 +6,9 @@ import './styles/mission-control.css';
 
 const App = () => (
   <SoundsProvider sounds={createSounds(sounds)}>
-    <Router><AppLayout /></Router>
+    <Router>
+      <AppLayout />
+    </Router>
   </SoundsProvider>
 );
 export default App;
