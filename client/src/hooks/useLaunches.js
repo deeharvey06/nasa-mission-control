@@ -1,75 +1,91 @@
 import { useCallback, useEffect, useState } from 'react';
-
+import { useBleeps } from '@arwes/react-bleeps';
 import { httpGetLaunches, httpSubmitLaunch, httpAbortLaunch } from './requests';
 
-function useLaunches(onSuccessSound, onAbortSound, onFailureSound) {
-  const [launches, saveLaunches] = useState([]);
+export default function useLaunches() {
+  const [launches, setLaunches] = useState([]);
   const [isPendingLaunch, setPendingLaunch] = useState(false);
-
-  const getLaunches = useCallback(async () => {
-    const fetchedLaunches = await httpGetLaunches();
-    saveLaunches(fetchedLaunches);
-  }, []);
+  const [error, setError] = useState('');
+  const [status, setStatus] = useState('');
+  const bleeps = useBleeps();
+  const dismissStatus = useCallback(() => setStatus(''), []);
 
   useEffect(() => {
-    getLaunches();
-  }, [getLaunches]);
+    if (!status) return;
+    const timeout = setTimeout(dismissStatus, 5000);
+    return () => clearTimeout(timeout);
+  }, [status, dismissStatus]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    httpGetLaunches(controller.signal)
+      .then((data) => {
+        if (!controller.signal.aborted) setLaunches(data);
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted) setError(error.message);
+      });
+    return () => controller.abort();
+  }, []);
 
   const submitLaunch = useCallback(
-    async (e) => {
-      e.preventDefault();
+    async (event) => {
+      event.preventDefault();
       setPendingLaunch(true);
-
-      const data = new FormData(e.target);
-
-      const launchDate = new Date(data.get('launch-day'));
-      const mission = data.get('mission-name');
-      const rocket = data.get('rocket-name');
-      const target = data.get('planets-selector');
-
-      const response = await httpSubmitLaunch({
-        launchDate,
-        mission,
-        rocket,
-        target,
-      });
-
-      const success = response.ok;
-
-      if (success) {
-        getLaunches();
-        setTimeout(() => {
-          setPendingLaunch(false);
-          onSuccessSound();
-        }, 800);
-      } else {
-        onFailureSound();
+      setError('');
+      setStatus('');
+      const data = new FormData(event.currentTarget);
+      try {
+        const launch = await httpSubmitLaunch({
+          launchDate: data.get('launch-day'),
+          mission: data.get('mission-name'),
+          rocket: data.get('rocket-name'),
+          target: data.get('planets-selector'),
+        });
+        setLaunches((current) =>
+          [...current, launch].sort((a, b) => a.flightNumber - b.flightNumber),
+        );
+        setStatus('Mission scheduled successfully.');
+        bleeps.success?.play();
+      } catch (error) {
+        setError(error.message);
+        bleeps.warning?.play();
+      } finally {
+        setPendingLaunch(false);
       }
     },
-    [getLaunches, onSuccessSound, onFailureSound],
+    [bleeps],
   );
 
   const abortLaunch = useCallback(
     async (id) => {
-      const response = await httpAbortLaunch(id);
-
-      const success = response.ok;
-      if (success) {
-        getLaunches();
-        onAbortSound();
-      } else {
-        onFailureSound();
+      setError('');
+      setStatus('');
+      try {
+        const updated = await httpAbortLaunch(id);
+        setLaunches((current) =>
+          current.map((launch) =>
+            launch.flightNumber === id ? updated : launch,
+          ),
+        );
+        setStatus('Mission aborted.');
+        bleeps.abort?.play();
+        return true;
+      } catch (error) {
+        setError(error.message);
+        bleeps.warning?.play();
+        return false;
       }
     },
-    [getLaunches, onAbortSound, onFailureSound],
+    [bleeps],
   );
-
   return {
     launches,
     isPendingLaunch,
     submitLaunch,
     abortLaunch,
+    error,
+    status,
+    dismissStatus,
   };
 }
-
-export default useLaunches;

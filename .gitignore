@@ -66,3 +66,7 @@ pids
 # Operating System specific files
 .DS_Store
 Thumbs.db
+
+# Cypress artifacts
+cypress/screenshots/
+cypress/videos/

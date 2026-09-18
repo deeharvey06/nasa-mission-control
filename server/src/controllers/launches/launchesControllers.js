@@ -3,7 +3,7 @@ const {
   getAllLaunchesDB,
   addNewLaunchesDB,
   abortLaunchById,
-} = require('../../models/launches/LaunchesModel');
+} = require('../../models/launches/launchesModel');
 
 function getAllLaunches(req, res) {
   return res.status(200).json(getAllLaunchesDB());
