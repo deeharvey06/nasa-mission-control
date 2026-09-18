@@ -1,61 +1,27 @@
-const API_URL = 'http://localhost:8000';
+const API_URL = __API_URL__.replace(/\/$/, '');
 
-async function httpGetPlanets() {
+async function request(path, options) {
+  const response = await fetch(`${API_URL}${path}`, options);
+  let data;
   try {
-    const response = await fetch(`${API_URL}/planets`);
-    return response.json();
-  } catch (err) {
-    console.error(err);
-    return [];
+    data = await response.json();
+  } catch {
+    throw new Error(`Unable to read the server response (${response.status}).`);
   }
+  if (!response.ok)
+    throw new Error(data.error || `Request failed (${response.status}).`);
+  return data;
 }
-
-async function httpGetLaunches() {
-  try {
-    const response = await fetch(`${API_URL}/launches`);
-    const fetchLaunches = await response.json();
-
-    return fetchLaunches.sort((a, b) => a.flightNumber - b.flightNumber);
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
-}
-
-async function httpSubmitLaunch(launch) {
-  try {
-    const response = await fetch(`${API_URL}/launches`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(launch),
-    });
-
-    return response.json();
-  } catch (err) {
-    console.error(err);
-    return {
-      ok: false,
-    };
-  }
-}
-
-async function httpAbortLaunch(id) {
-  try {
-    await fetch(`${API_URL}/launches/${id}`, {
-      method: 'DELETE',
-    });
-
-    return {
-      ok: true,
-    };
-  } catch (err) {
-    console.error(err);
-    return {
-      ok: false,
-    };
-  }
-}
-
-export { httpGetPlanets, httpGetLaunches, httpSubmitLaunch, httpAbortLaunch };
+export const httpGetPlanets = (signal) => request('/planets', { signal });
+export const httpGetLaunches = async (signal) => {
+  const launches = await request('/launches', { signal });
+  return launches.sort((a, b) => a.flightNumber - b.flightNumber);
+};
+export const httpSubmitLaunch = (launch) =>
+  request('/launches', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(launch),
+  });
+export const httpAbortLaunch = (id) =>
+  request(`/launches/${id}`, { method: 'DELETE' });

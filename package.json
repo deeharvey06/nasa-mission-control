@@ -9,13 +9,48 @@
     "install": "npm run install-server && npm run install-client",
     "client": "npm start --prefix client",
     "server": "npm run dev --prefix server",
-    "dev": "npm run server & npm run client",
-    "deploy": "npm run build —-prefix client && npm start --prefix server",
-    "deploy-cluster": "npm run build —-prefix client && npm run cluster --prefix server",
-    "test": "npm test —-prefix server && npm test —-prefix client"
+    "dev": "concurrently -k -n api,client \"npm run server\" \"npm run client\"",
+    "deploy": "npm run build --prefix client && npm start --prefix server",
+    "deploy-cluster": "npm run build --prefix client && npm run cluster --prefix server",
+    "test": "npm run test:server && npm run test:client",
+    "build": "npm run build --prefix client",
+    "test:server": "npm test --prefix server -- --runInBand",
+    "test:client": "npm test --prefix client -- --runInBand",
+    "test:coverage": "npm run test:server -- --coverage && npm run test:client -- --coverage",
+    "lint": "npm run lint:js && npm run lint:css",
+    "lint:js": "eslint .",
+    "lint:css": "stylelint \"client/src/**/*.css\"",
+    "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "client:e2e": "npm start --prefix client -- --port 3100",
+    "test:e2e": "start-server-and-test client:e2e http://localhost:3100 \"cypress run --config baseUrl=http://localhost:3100\"",
+    "check": "npm run lint && npm run format:check && npm test && npm run build",
+    "prepare": "husky",
+    "lint:staged": "lint-staged"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "concurrently": "^9.2.0",
+    "cypress": "^15.21.1",
+    "eslint": "^9.39.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.9.8",
+    "start-server-and-test": "^2.1.5",
+    "stylelint": "^16.26.1",
+    "stylelint-config-standard": "^38.0.0"
+  }
 }
